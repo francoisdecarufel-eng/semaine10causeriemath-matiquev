@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Causerie Mathématique 4e Année - École Dollard</title>
+    <!-- Tailwind CSS pour un design moderne et adapté -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdf4;
+        }
+        h1, h2, h3, .font-heading {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+        .pulse-soft {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.85; }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+        }
+        .interactive-hover {
+            transition: all 0.2s ease-in-out;
+        }
+        .interactive-hover:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- En-tête Principal -->
+    <header class="bg-emerald-700 text-white shadow-md border-b-4 border-amber-400">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="bg-amber-400 text-emerald-950 p-2 rounded-xl shadow font-bold text-lg">
+                    <i class="fa-solid fa-ruler-horizontal"></i>
+                </div>
+                <div>
+                    <span class="text-[11px] uppercase tracking-wider font-semibold text-emerald-200">Maths 4e Année • École Dollard</span>
+                    <h1 class="text-lg md:text-xl font-bold tracking-tight">La Causerie Mesure : Le Grand Saut dans la Cour</h1>
+                </div>
+            </div>
+            
+            <!-- Badges pédagogiques -->
+            <div class="flex gap-2 text-xs">
+                <span class="bg-emerald-800 text-emerald-100 px-3 py-1 rounded-full flex items-center gap-1.5 font-medium">
+                    <i class="fa-solid fa-arrows-left-right text-amber-300"></i> Estimer des longueurs (m, dm, cm, mm)
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="flex-1 max-w-6xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Colonne Gauche : Image SVG Interactive Épurée (7 Cols) -->
+        <section class="lg:col-span-7 flex flex-col gap-4">
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col flex-1">
+                
+                <!-- Titre & Contrôles Visuels -->
+                <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
+                    <div>
+                        <span class="inline-block bg-amber-100 text-amber-900 text-xs font-bold px-2.5 py-0.5 rounded-md mb-1">
+                            Estimation Mystère
+                        </span>
+                        <h2 class="text-base md:text-lg font-bold text-slate-800">Quelle est la longueur de la ligne de saut ?</h2>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="toggleGrid()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 font-medium border border-slate-200">
+                            <i class="fa-solid fa-border-all text-emerald-600"></i> <span id="grid-btn-text">Masquer le repère (1m)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Support Visuel SVG Interactif : Sol de la cour uniquement -->
+                <div class="relative w-full aspect-[4/3] bg-slate-100 rounded-xl overflow-hidden border-2 border-slate-300 flex items-center justify-center shadow-inner">
+                    
+                    <svg id="math-canvas" viewBox="0 0 800 500" class="w-full h-full object-cover select-none">
+                        <defs>
+                            <!-- Pattern de grille pour les mètres -->
+                            <pattern id="gridPattern" width="100" height="500" patternUnits="userSpaceOnUse">
+                                <line x1="100" y1="0" x2="100" y2="500" stroke="rgba(16, 185, 129, 0.3)" stroke-width="2" stroke-dasharray="6,6"/>
+                            </pattern>
+                            <!-- Ombre portée pour les éléments -->
+                            <filter id="drop-shadow" x="-10%" y="-10%" width="120%" height="120%">
+                                <feDropShadow dx="2" dy="4" stdDeviation="3" flood-opacity="0.12"/>
+                            </filter>
+                        </defs>
+
+                        <!-- Sol de la cour d'école (Asphalt texturé propre) -->
+                        <rect x="0" y="0" width="800" height="500" fill="#334155" />
+                        
+                        <!-- Lignes décoratives de terrain de jeux -->
+                        <circle cx="400" cy="250" r="180" fill="none" stroke="#475569" stroke-width="8" opacity="0.4"/>
+                        <line x1="0" y1="250" x2="800" y2="250" stroke="#475569" stroke-width="6" opacity="0.3"/>
+
+                        <!-- Cartouche Identifiant École Dollard -->
+                        <g transform="translate(250, 25)" filter="url(#drop-shadow)">
+                            <rect x="0" y="0" width="300" height="42" fill="#0f172a" rx="21" stroke="#38bdf8" stroke-width="2"/>
+                            <text x="150" y="27" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="bold" font-family="'Fredoka', sans-serif" letter-spacing="1">
+                                ÉCOLE DOLLARD
+                            </text>
+                        </g>
+
+                        <!-- Grille repère verticale modifiable (100px = 1 mètre) -->
+                        <rect id="grid-overlay" x="100" y="0" width="700" height="500" fill="url(#gridPattern)" class="transition-opacity duration-300 opacity-100"/>
+
+                        <!-- RÉFÉRENCE VISUELLE FIXE : LE TAPIS DE SAUT DE 1 MÈTRE -->
+                        <g transform="translate(100, 100)" filter="url(#drop-shadow)">
+                            <!-- Tapis vert interactif -->
+                            <rect x="0" y="0" width="100" height="55" rx="10" fill="#22c55e" stroke="#15803d" stroke-width="3"/>
+                            <!-- Motif texturé du tapis repoussé aux bords -->
+                            <line x1="8" y1="8" x2="8" y2="47" stroke="#86efac" stroke-width="2"/>
+                            <line x1="92" y1="8" x2="92" y2="47" stroke="#86efac" stroke-width="2"/>
+                            <!-- Texte centré sur deux lignes pour un ajustement parfait -->
+                            <text x="50" y="25" text-anchor="middle" fill="white" font-weight="bold" font-size="13" font-family="'Fredoka', sans-serif">1 MÈTRE</text>
+                            <text x="50" y="44" text-anchor="middle" fill="white" font-weight="bold" font-size="12" font-family="'Fredoka', sans-serif">(1 m)</text>
+                            
+                            <!-- Sous-titre de conversion sous le tapis (légèrement élargi) -->
+                            <rect x="-15" y="65" width="130" height="24" fill="#14532d" rx="6"/>
+                            <text x="50" y="81" text-anchor="middle" fill="#86efac" font-weight="bold" font-size="11.5">= 10 dm = 100 cm</text>
+                        </g>
+
+                        <!-- LA LIGNE À ESTIMER (5 MÈTRES EXACTS DE D À A) -->
+                        <g transform="translate(0, 280)">
+                            <!-- Ombre de la ligne -->
+                            <line x1="100" y1="53" x2="600" y2="53" stroke="rgba(0,0,0,0.3)" stroke-width="20" stroke-linecap="round"/>
+                            
+                            <!-- Ligne jaune de mesure très visible -->
+                            <line x1="100" y1="50" x2="600" y2="50" stroke="#f59e0b" stroke-width="16" stroke-linecap="round" />
+                            
+                            <!-- Ligne pointillée centrale -->
+                            <line x1="100" y1="50" x2="600" y2="50" stroke="#ffffff" stroke-width="4" stroke-dasharray="14,10" stroke-linecap="round"/>
+
+                            <!-- Marqueur DÉPART (D) -->
+                            <g transform="translate(100, 50)" class="cursor-pointer" filter="url(#drop-shadow)">
+                                <circle r="26" fill="#ef4444" stroke="#ffffff" stroke-width="4"/>
+                                <text x="0" y="8" text-anchor="middle" fill="white" font-weight="bold" font-size="20">D</text>
+                                <rect x="-42" y="34" width="84" height="24" fill="#991b1b" rx="6"/>
+                                <text x="0" y="50" text-anchor="middle" fill="white" font-weight="bold" font-size="12">DÉPART</text>
+                            </g>
+
+                            <!-- Marqueur ARRIVÉE (A) -->
+                            <g transform="translate(600, 50)" class="cursor-pointer" filter="url(#drop-shadow)">
+                                <circle r="26" fill="#3b82f6" stroke="#ffffff" stroke-width="4"/>
+                                <text x="0" y="8" text-anchor="middle" fill="white" font-weight="bold" font-size="20">A</text>
+                                <rect x="-42" y="34" width="84" height="24" fill="#1e40af" rx="6"/>
+                                <text x="0" y="50" text-anchor="middle" fill="white" font-weight="bold" font-size="12">ARRIVÉE</text>
+                            </g>
+                        </g>
+
+                        <!-- OVERLAY INTERACTIF DES STRATÉGIES ÉLÈVES (Bonds de 1m) -->
+                        <g id="overlay-strategy" class="hidden transition-all duration-300" transform="translate(0, 280)">
+                            <!-- 5 Arcs démontrant les répétitions du tapis de 1m -->
+                            <path d="M 100,20 Q 150,-40 200,20" fill="none" stroke="#4ade80" stroke-width="4" stroke-dasharray="6,4"/>
+                            <path d="M 200,20 Q 250,-40 300,20" fill="none" stroke="#4ade80" stroke-width="4" stroke-dasharray="6,4"/>
+                            <path d="M 300,20 Q 350,-40 400,20" fill="none" stroke="#4ade80" stroke-width="4" stroke-dasharray="6,4"/>
+                            <path d="M 400,20 Q 450,-40 500,20" fill="none" stroke="#4ade80" stroke-width="4" stroke-dasharray="6,4"/>
+                            <path d="M 500,20 Q 550,-40 600,20" fill="none" stroke="#4ade80" stroke-width="4" stroke-dasharray="6,4"/>
+                            
+                            <!-- Marqueurs de découpage 1m -->
+                            <circle cx="200" cy="20" r="6" fill="#22c55e" stroke="white" stroke-width="2"/>
+                            <circle cx="300" cy="20" r="6" fill="#22c55e" stroke="white" stroke-width="2"/>
+                            <circle cx="400" cy="20" r="6" fill="#22c55e" stroke="white" stroke-width="2"/>
+                            <circle cx="500" cy="20" r="6" fill="#22c55e" stroke="white" stroke-width="2"/>
+
+                            <rect x="220" y="-65" width="260" height="32" fill="#15803d" rx="8" stroke="#86efac" stroke-width="1.5" filter="url(#drop-shadow)"/>
+                            <text x="350" y="-44" text-anchor="middle" fill="white" font-weight="bold" font-size="14" font-family="'Fredoka', sans-serif">5 fois le tapis vert = 5 MÈTRES</text>
+                        </g>
+                    </svg>
+
+                </div>
+
+                <!-- Consigne principale pour les élèves -->
+                <div class="mt-3 bg-amber-50 rounded-xl p-3 border border-amber-200 flex items-center gap-3">
+                    <div class="bg-amber-500 text-white p-2.5 rounded-xl text-lg shrink-0 shadow">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <p class="text-xs md:text-sm text-amber-950 font-medium leading-relaxed">
+                        <strong>Le Défi :</strong> En comparant avec le tapis vert de <strong>1 mètre</strong>, combien mesure la ligne de saut entre le point de <strong>Départ (D)</strong> et l'<strong>Arrivée (A)</strong> ?
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Colonne Droite : Guide Facile pour l'Enseignant (5 Cols) -->
+        <section class="lg:col-span-5 flex flex-col gap-4">
+            
+            <!-- Boîte Pense - Parle - Partage -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col gap-3">
+                
+                <!-- Boutons de navigation des étapes -->
+                <div class="flex justify-between items-center bg-slate-100 p-1 rounded-xl gap-1">
+                    <button id="step-btn-1" onclick="setStep(1)" class="flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-emerald-600 text-white shadow-sm">
+                        1. Pense
+                    </button>
+                    <button id="step-btn-2" onclick="setStep(2)" class="flex-1 py-1.5 text-xs font-bold text-slate-600 rounded-lg transition hover:text-slate-900">
+                        2. Parle
+                    </button>
+                    <button id="step-btn-3" onclick="setStep(3)" class="flex-1 py-1.5 text-xs font-bold text-slate-600 rounded-lg transition hover:text-slate-900">
+                        3. Partage
+                    </button>
+                </div>
+
+                <!-- Consigne dynamique pour l'étape active -->
+                <div id="step-instruction-box" class="bg-emerald-50 border-l-4 border-emerald-500 p-3 rounded-r-xl">
+                    <div class="flex justify-between items-center mb-1">
+                        <span id="step-title" class="font-bold text-emerald-900 text-xs uppercase tracking-wide">
+                            Étape 1 : Seul (1 min)
+                        </span>
+                        <div class="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                            <i class="fa-regular fa-clock"></i> <span id="timer-display">01:00</span>
+                        </div>
+                    </div>
+                    <p id="step-description" class="text-xs text-emerald-950 leading-relaxed">
+                        « Regarde le tapis vert de 1 mètre. Combien de fois penses-tu qu'il entre entre le Départ et l'Arrivée ? Ne dis rien, réfléchis dans ta tête. »
+                    </p>
+                </div>
+
+                <!-- Minuteur de causerie -->
+                <div class="flex items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <button onclick="toggleTimer()" id="timer-btn" class="text-xs bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-play text-amber-400" id="timer-icon"></i> <span id="timer-btn-text">Lancer le chrono</span>
+                    </button>
+                    <button onclick="resetTimer()" class="text-xs text-slate-500 hover:text-slate-800 transition">
+                        Réinitialiser
+                    </button>
+                </div>
+
+                <!-- Relances simples pour l'enseignant -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2 flex items-center gap-1">
+                        <i class="fa-solid fa-lightbulb text-amber-500"></i> Relances recommandées :
+                    </h3>
+                    <ul class="space-y-1.5 text-xs text-slate-700">
+                        <li class="bg-slate-50 p-2 rounded-lg border border-slate-100 flex items-start gap-2">
+                            <i class="fa-solid fa-comment text-emerald-600 mt-0.5"></i>
+                            <span>« Quelle unité est la plus pratique pour mesurer cette ligne : le <strong>mètre (m)</strong>, le <strong>décimètre (dm)</strong> ou le <strong>centimètre (cm)</strong> ? »</span>
+                        </li>
+                        <li class="bg-slate-50 p-2 rounded-lg border border-slate-100 flex items-start gap-2">
+                            <i class="fa-solid fa-comment text-emerald-600 mt-0.5"></i>
+                            <span>« Si ton estimation est en décimètres, peux-tu la transformer en mètres ? Explique comment tu ferais. »</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Réponses interactives d'élèves fictifs -->
+                <div>
+                    <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-2 flex items-center gap-1">
+                        <i class="fa-solid fa-comments text-indigo-500"></i> Réponses possibles des élèves :
+                    </h3>
+
+                    <div class="space-y-2">
+                        <!-- Élève 1 -->
+                        <button onclick="showStudentStrategy(1)" class="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition flex items-center justify-between interactive-hover">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center">É1</div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">Répéter le mètre</p>
+                                    <p class="text-[11px] text-slate-500 italic">Cliquer pour voir l'estimation...</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-md">En mètres (m)</span>
+                        </button>
+
+                        <!-- Élève 2 -->
+                        <button onclick="showStudentStrategy(2)" class="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition flex items-center justify-between interactive-hover">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-full bg-rose-100 text-rose-700 font-bold text-xs flex items-center justify-center">É2</div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">Compter en décimètres</p>
+                                    <p class="text-[11px] text-slate-500 italic">Cliquer pour voir l'estimation...</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] bg-sky-100 text-sky-800 font-semibold px-2 py-0.5 rounded-md">En décimètres (dm)</span>
+                        </button>
+
+                        <!-- Élève 3 -->
+                        <button onclick="showStudentStrategy(3)" class="w-full text-left p-2.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 transition flex items-center justify-between interactive-hover">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-700 font-bold text-xs flex items-center justify-center">É3</div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">Compter en centimètres</p>
+                                    <p class="text-[11px] text-slate-500 italic">Cliquer pour voir l'estimation...</p>
+                                </div>
+                            </div>
+                            <span class="text-[10px] bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-md">En centimètres (cm)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Boîte d'explication simplifiée -->
+                <div id="strategy-detail-box" class="hidden bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-xs transition-all">
+                    <div class="flex justify-between items-center font-bold text-emerald-900 mb-1">
+                        <span id="student-name"></span>
+                        <button onclick="hideStrategyDetail()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-sm"></i></button>
+                    </div>
+                    <p id="student-explanation" class="text-slate-700 leading-relaxed"></p>
+                </div>
+
+            </div>
+
+            <!-- Bouton pour Dévoiler la mesure exacte -->
+            <div class="bg-white rounded-2xl p-3 shadow-sm border border-slate-200 flex flex-col gap-2">
+                <button onclick="revealExactMeasure()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl transition text-xs md:text-sm flex items-center justify-center gap-2 shadow">
+                    <i class="fa-solid fa-eye"></i> Dévoiler la mesure exacte
+                </button>
+                
+                <div id="reveal-box" class="hidden bg-slate-900 text-white p-3.5 rounded-xl text-xs space-y-2.5">
+                    <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                        <span class="text-amber-400 font-bold">Longueur exacte :</span>
+                        <span class="text-base font-extrabold text-emerald-400 font-heading tracking-wide">5 MÈTRES (5 m)</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 text-center text-[11px] pt-1">
+                        <div class="bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+                            <span class="block text-slate-400 text-[10px]">En dm</span>
+                            <span class="font-bold text-sky-300">50 dm</span>
+                        </div>
+                        <div class="bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+                            <span class="block text-slate-400 text-[10px]">En cm</span>
+                            <span class="font-bold text-sky-300">500 cm</span>
+                        </div>
+                        <div class="bg-slate-800 p-1.5 rounded-lg border border-slate-700">
+                            <span class="block text-slate-400 text-[10px]">En mm</span>
+                            <span class="font-bold text-sky-300">5 000 mm</span>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-emerald-300 text-center italic pt-1">
+                        Bravo ! Toutes les estimations entre 4 m et 6 m (40 dm à 60 dm) sont excellentes !
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Logique JavaScript de l'Application -->
+    <script>
+        let currentStep = 1;
+        let timerSeconds = 60;
+        let timerInterval = null;
+        let isTimerRunning = false;
+        let isGridVisible = true;
+
+        const stepsData = {
+            1: {
+                title: "Étape 1 : Pense (Seul - 1 min)",
+                desc: "« Regarde le tapis vert de 1 mètre. Combien de fois penses-tu qu'il entre entre le Départ et l'Arrivée ? Ne dis rien, réfléchis dans ta tête. »",
+                time: 60
+            },
+            2: {
+                title: "Étape 2 : Parle (En équipe - 2 min)",
+                desc: "« Tourne-toi vers ton voisin. Dis-lui ton estimation. Avez-vous choisi la même unité (mètres, décimètres ou centimètres) ? »",
+                time: 120
+            },
+            3: {
+                title: "Étape 3 : Partage (En grand groupe)",
+                desc: "« Qui veut donner son estimation ? Comment as-tu fait pour trouver ce nombre ? »",
+                time: 180
+            }
+        };
+
+        const studentStrategies = {
+            1: {
+                name: "Stratégie 1 : Répéter l'étalon de 1 m",
+                explanation: "« J'ai imaginé placer le tapis vert de 1 mètre plusieurs fois de suite. Ça rentre environ 5 fois, donc c'est environ 5 mètres. »"
+            },
+            2: {
+                name: "Stratégie 2 : Compter en décimètres",
+                explanation: "« Comme 1 mètre c'est 10 décimètres, j'ai compté par bonds de 10 : 10, 20, 30, 40, 50 dm ! »"
+            },
+            3: {
+                name: "Stratégie 3 : Compter en centimètres",
+                explanation: "« 1 mètre c'est 100 cm. Donc 5 mètres, c'est 500 cm. Le chemin fait environ 500 cm. »"
+            }
+        };
+
+        function setStep(stepNum) {
+            currentStep = stepNum;
+            [1, 2, 3].forEach(i => {
+                const btn = document.getElementById(`step-btn-${i}`);
+                if (i === stepNum) {
+                    btn.className = "flex-1 py-1.5 text-xs font-bold rounded-lg transition bg-emerald-600 text-white shadow-sm";
+                } else {
+                    btn.className = "flex-1 py-1.5 text-xs font-bold text-slate-600 rounded-lg transition hover:text-slate-900";
+                }
+            });
+            document.getElementById("step-title").innerText = stepsData[stepNum].title;
+            document.getElementById("step-description").innerText = stepsData[stepNum].desc;
+            resetTimer(stepsData[stepNum].time);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const secs = (timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById("timer-display").innerText = `${mins}:${secs}`;
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                document.getElementById("timer-icon").className = "fa-solid fa-play text-amber-400";
+                document.getElementById("timer-btn-text").innerText = "Reprendre";
+            } else {
+                isTimerRunning = true;
+                document.getElementById("timer-icon").className = "fa-solid fa-pause text-amber-400";
+                document.getElementById("timer-btn-text").innerText = "Pause";
+                
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        document.getElementById("timer-icon").className = "fa-solid fa-play text-amber-400";
+                        document.getElementById("timer-btn-text").innerText = "Terminé !";
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer(customTime = null) {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            document.getElementById("timer-icon").className = "fa-solid fa-play text-amber-400";
+            document.getElementById("timer-btn-text").innerText = "Lancer le chrono";
+            timerSeconds = customTime !== null ? customTime : stepsData[currentStep].time;
+            updateTimerDisplay();
+        }
+
+        function toggleGrid() {
+            const grid = document.getElementById("grid-overlay");
+            const btnText = document.getElementById("grid-btn-text");
+            isGridVisible = !isGridVisible;
+            if (isGridVisible) {
+                grid.classList.remove("opacity-0");
+                grid.classList.add("opacity-100");
+                btnText.innerText = "Masquer le repère (1m)";
+            } else {
+                grid.classList.remove("opacity-100");
+                grid.classList.add("opacity-0");
+                btnText.innerText = "Afficher le repère (1m)";
+            }
+        }
+
+        function showStudentStrategy(id) {
+            const data = studentStrategies[id];
+            document.getElementById("student-name").innerText = data.name;
+            document.getElementById("student-explanation").innerText = data.explanation;
+            document.getElementById("strategy-detail-box").classList.remove("hidden");
+            document.getElementById("overlay-strategy").classList.remove("hidden");
+        }
+
+        function hideStrategyDetail() {
+            document.getElementById("strategy-detail-box").classList.add("hidden");
+            document.getElementById("overlay-strategy").classList.add("hidden");
+        }
+
+        function revealExactMeasure() {
+            document.getElementById("reveal-box").classList.toggle("hidden");
+            // Affiche aussi les bonds lors du dévoilement
+            document.getElementById("overlay-strategy").classList.remove("hidden");
+        }
+
+        window.onload = function() {
+            updateTimerDisplay();
+        };
+    </script>
+</body>
+</html>
